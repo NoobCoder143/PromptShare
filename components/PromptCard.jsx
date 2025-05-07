@@ -78,7 +78,11 @@ const PromptCard = ({ post, edit, handleDelete }) => {
       <div className="mt-3 inline-block rounded-md bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-600">
         #{Post.tag}
       </div>
-      <div className="copy_btn absolute bottom-2 right-2 " onClick={handleCopy}>
+      <div className="copy_btn absolute bottom-2 right-2 " onClick={(e)=>{
+            e.stopPropagation(); // ⛔ prevent modal from opening
+
+        handleCopy()}}
+      >
         <Image
           src={
             copy === "" ? "/assets/icons/copy.svg" : "/assets/icons/tick.svg"
@@ -105,7 +109,7 @@ const PromptCard = ({ post, edit, handleDelete }) => {
         )}
       </div>
       <div
-        className="edit_btn absolute top-2 right-2 "
+        className="delete_btn absolute top-2 right-2 "
         style={{ cursor: "pointer" }}
         onClick={() => {
           handleDelete(post);
