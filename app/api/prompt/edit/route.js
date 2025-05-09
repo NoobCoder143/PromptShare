@@ -4,7 +4,7 @@ export const PUT=async(req)=>{
  try{ await connectedToDB();
   const {newprompt,post,userId,newtag}= await req.json();
  
-
+//{new:true} means "After updating, give me the new, updated document instead of the old one." to mongoose
   const updatedpost= await Prompt.findOneAndUpdate({creator:userId,prompt:post.prompt,tag:post.tag},{$set:{prompt:newprompt,tag:newtag}},{new:true})
   if(!updatedpost){
     return new Response(JSON.stringify({error:"post not found"}),{status:404})
