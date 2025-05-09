@@ -12,7 +12,12 @@ const promptSchema=new Schema({
     tag:{
         type:String,
         required:[true,"Tag is required"]
+    },
+    liked:{
+        type:Boolean,
+        default:false
     }
+    
 })
 
 const Prompt=models.Prompt||model("Prompt",promptSchema)

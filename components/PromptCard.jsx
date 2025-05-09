@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-const PromptCard = ({ post, edit, handleDelete }) => {
+const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
   const [copy, setcopy] = useState("");
   const [Post, setPost] = useState(post);
   const [updatedPrompt, setupdatedPrompt] = useState(post.prompt);
@@ -18,7 +18,8 @@ const PromptCard = ({ post, edit, handleDelete }) => {
   const { data: session } = useSession();
   const [editModal, seteditModal] = useState(false);
   const [showModal, setshowModal] = useState(false);
-  console.log("POST====", post);
+  const [heart, setHeart] = useState(liked);
+
   const handleCopy = () => {
     setcopy(post.prompt);
     navigator.clipboard.writeText(post.prompt);
@@ -26,6 +27,21 @@ const PromptCard = ({ post, edit, handleDelete }) => {
       setcopy("");
     }, 5000);
   };
+  const handleHeartChange=async(newHeart)=>{
+    try {
+      const res= await fetch("/api/prompt/heart",{
+        method:"PUT",
+        body: JSON.stringify({
+          postId:post._id,
+          heart:newHeart
+        })
+      })
+      const response= await res.json();
+      
+    } catch (error) {
+      console.log("error in updating like:",error)
+    }
+  }
   const handleSave = async () => {
     try {
       const res = await fetch("/api/prompt/edit", {
@@ -78,10 +94,14 @@ const PromptCard = ({ post, edit, handleDelete }) => {
       <div className="mt-3 inline-block rounded-md bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-600">
         #{Post.tag}
       </div>
-      <div className="copy_btn absolute bottom-2 right-2 " onClick={(e)=>{
-            e.stopPropagation(); // ⛔ prevent modal from opening
+      {/* copy button */}
+      <div
+        className="copy_btn absolute bottom-2 right-2 "
+        onClick={(e) => {
+          e.stopPropagation(); // ⛔ prevent modal from opening
 
-        handleCopy()}}
+          handleCopy();
+        }}
       >
         <Image
           src={
@@ -92,6 +112,31 @@ const PromptCard = ({ post, edit, handleDelete }) => {
           alt="copy_btn"
         />
       </div>
+      {/* like button */}
+      {!edit && (
+        <div
+          className="like_btn absolute top-2 right-2 "
+          onClick={(e) => {
+            e.stopPropagation(); // ⛔ prevent modal from opening
+            const newHeart=!heart
+            setHeart(newHeart)
+            handleHeartChange(newHeart);
+            onLikeToggle(post._id,newHeart)
+          }}
+        >
+          <Image
+            src={
+              !heart
+                ? "/assets/icons/white_heart.png"
+                : "/assets/icons/red_heart.png"
+            }
+            width={20}
+            height={20}
+            alt="like_btn"
+          />
+        </div>
+      )}
+      {/* edit button */}
       <div
         className="edit_btn absolute top-2 right-8 "
         style={{ cursor: "pointer" }}
@@ -108,6 +153,7 @@ const PromptCard = ({ post, edit, handleDelete }) => {
           />
         )}
       </div>
+      {/* delete button */}
       <div
         className="delete_btn absolute top-2 right-2 "
         style={{ cursor: "pointer" }}
@@ -142,7 +188,6 @@ const PromptCard = ({ post, edit, handleDelete }) => {
               transition
               className="w-full sm:w-[500px] max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all p-6"
             >
-              
               {/* Modal Content */}
               <div className="bg-white">
                 <DialogTitle
@@ -225,10 +270,7 @@ const PromptCard = ({ post, edit, handleDelete }) => {
               </div>
 
               <div className="text-lg font-semibold text-gray-900">
-              <DialogTitle
-              as="h3">
-              {Post.creator.username}
-              </DialogTitle>  
+                <DialogTitle as="h3">{Post.creator.username}</DialogTitle>
               </div>
               <h5 className="text-lg font-semibold text-sm text-gray-600">
                 {Post.creator.email}
