@@ -10,7 +10,6 @@ const page = () => {
       const getuserPosts=async()=>{
        const res=await fetch('/api/prompt')
        const data= await res.json();
-       console.log("posts in my post",data)
        setposts(data);
       }
     
@@ -32,10 +31,9 @@ const page = () => {
     };
     
   return (
-    <div className='flex flex-col items-center'>
-    <div className='grid grid-cols-4 gap-4 pt-10'>
+    <div className='flex flex-wrap gap-4'>
+    
        {posts.map(post=>(session?.user?.email===post.creator.email&&<PromptCard key={post._id} post={post} edit={true} handleDelete={handleDelete}/>))}
-    </div>
     </div>
   )
 }

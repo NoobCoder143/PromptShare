@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState,useEffect} from "react";
 import { useSession } from "next-auth/react";
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
-const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
+const PromptCard = ({ post, edit, handleDelete, onLikeToggle }) => {
   const [copy, setcopy] = useState("");
   const [Post, setPost] = useState(post);
   const [updatedPrompt, setupdatedPrompt] = useState(post.prompt);
@@ -18,8 +18,8 @@ const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
   const { data: session } = useSession();
   const [editModal, seteditModal] = useState(false);
   const [showModal, setshowModal] = useState(false);
-  const [heart, setHeart] = useState(liked);
-
+  const [heart, setHeart] = useState(false);
+  const [likedByCurrentUser, setlikedByCurrentUser] = useState(false);
   const handleCopy = () => {
     setcopy(post.prompt);
     navigator.clipboard.writeText(post.prompt);
@@ -27,21 +27,30 @@ const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
       setcopy("");
     }, 5000);
   };
-  const handleHeartChange=async(newHeart)=>{
+  useEffect(() => {
+    setlikedByCurrentUser(post.likedBy?.includes(session?.id));
+    setHeart(post.likedBy?.includes(session?.id));
+  }, [session, post.likedBy]);
+
+  const handleHeartChange = async (newHeart) => {
     try {
-      const res= await fetch("/api/prompt/heart",{
-        method:"PUT",
+      const res = await fetch("/api/prompt/heart", {
+        method: "PUT",
         body: JSON.stringify({
-          postId:post._id,
-          heart:newHeart
-        })
-      })
-      const response= await res.json();
-      
+          postId: post._id,
+          heart: newHeart,
+          likedBy: session?.id,
+        }),
+      });
+
+      const response = await res.json();
+      setlikedByCurrentUser(response.likedBy.includes(session?.id));
+      setHeart(response.likedBy.includes(session?.id));
     } catch (error) {
-      console.log("error in updating like:",error)
+      console.log("error in updating like:", error);
     }
-  }
+  };
+//editing the prompt in my posts section
   const handleSave = async () => {
     try {
       const res = await fetch("/api/prompt/edit", {
@@ -118,17 +127,18 @@ const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
           className="like_btn absolute top-2 right-2 "
           onClick={(e) => {
             e.stopPropagation(); // ⛔ prevent modal from opening
-            const newHeart=!heart
-            setHeart(newHeart)
+            const newHeart = !heart;
+            setHeart(newHeart);
+            setlikedByCurrentUser(!likedByCurrentUser);
             handleHeartChange(newHeart);
-            onLikeToggle(post._id,newHeart)
+            onLikeToggle(post._id, newHeart);
           }}
         >
           <Image
             src={
-              !heart
-                ? "/assets/icons/white_heart.png"
-                : "/assets/icons/red_heart.png"
+              heart
+                ? "/assets/icons/red_heart.png"
+                : "/assets/icons/white_heart.png"
             }
             width={20}
             height={20}
@@ -138,7 +148,7 @@ const PromptCard = ({ post, edit, handleDelete,liked,onLikeToggle}) => {
       )}
       {/* edit button */}
       <div
-        className="edit_btn absolute top-2 right-8 "
+        className="edit_btn absolute top-2    right-8 "
         style={{ cursor: "pointer" }}
         onClick={() => {
           seteditModal(true);
