@@ -1,29 +1,41 @@
 "use client";
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import { useSession } from "next-auth/react";
 const Feed = () => {
   const [text, setText] = useState("");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setfilteredPosts] = useState([]);
   const [showLikedNotes, setshowLikedNotes] = useState(false);
-
+  const {data:session} = useSession()
   //this shows the liked notes when showLikedNotes is true
   const handleLikedNotes = (showLikedNotes) => {
     if (showLikedNotes) {
-      const liked = posts.filter((post) => post.liked);
-      setfilteredPosts(liked);
+const liked = posts.filter(
+      (post) => Array.isArray(post.likedBy) && post.likedBy.includes(session?.id)
+    );      setfilteredPosts(liked);
     } else {
       setfilteredPosts(posts);
     }
   };
-  //this updates the liked feild of post immediately,really important cuz backend takes some time in doing that
-  const handleLikeToggle = (postId, newHeart) => {
-    const updatedPosts = posts.map((post) =>
-      post._id === postId ? { ...post, liked: newHeart } : post
-    );
-    setPosts(updatedPosts);
-    setfilteredPosts(updatedPosts); // also update the filtered list
-  };
+  //this updates the likedBy array of post immediately,really important cuz backend takes some time in doing that
+  const handleLikeToggle = (postId) => {
+  const updatedPosts = posts.map((post) => {
+    if (post._id === postId) {
+      const alreadyLiked = post.likedBy.includes(session?.id);
+      const newLikedBy = alreadyLiked
+        ? post.likedBy.filter(id => id !== session?.id)  // Unlike
+        : [...post.likedBy, session?.id];               // Like
+
+      return { ...post, likedBy: newLikedBy };
+    }
+    return post;
+  });
+
+  setPosts(updatedPosts);
+  setfilteredPosts(updatedPosts);
+};
+
 
   const handleTextChange = (e) => {
     const changeText = e.target.value;
@@ -35,6 +47,7 @@ const Feed = () => {
       setfilteredPosts(posts.filter((post) => regex.test(post.tag)));
     }
   };
+  //this useEfect gets all the posts from the database
   useEffect(() => {
     const getAllposts = async () => {
       const res = await fetch("/api/prompt");
@@ -105,7 +118,7 @@ const Feed = () => {
       </div>
 
       {/* PromptCards */}
-      <div className="promptCards grid grid-cols-4 gap-4">
+      <div className="flex flex-wrap  gap-9">
         {filteredPosts.length === 0 ? (
           <p className="col-span-4 text-center text-gray-500">
             No Prompts to display
@@ -117,7 +130,6 @@ const Feed = () => {
               post={post}
               edit={false}
               handleDelete={handleDelete}
-              liked={post.liked}
               onLikeToggle={handleLikeToggle}
             />
           ))

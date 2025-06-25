@@ -12,7 +12,7 @@ const Homepage = () => {
             <span className="orange_gradient">PromptShare</span>
           </h1>
           <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
-            Boost your productivity. Start using our app today.
+            Boost your productivity. Start using PromptShare today.
           </h2>
           <p className="mt-6 text-lg text-gray-600">
             PromptShare is an open-source AI prompting project where you can

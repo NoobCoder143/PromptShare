@@ -1,4 +1,5 @@
 import {Schema,models,model} from 'mongoose'
+import User from './user';
 
 const promptSchema=new Schema({
     creator:{
@@ -13,10 +14,11 @@ const promptSchema=new Schema({
         type:String,
         required:[true,"Tag is required"]
     },
-    liked:{
-        type:Boolean,
-        default:false
-    }
+    //maintaining an array of users who have liked the prompt
+    likedBy:[{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    }]
     
 })
 
