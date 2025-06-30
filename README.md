@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚀 PromptShare
 
-## Getting Started
+PromptShare is a modern full-stack web application where users can **sign in with Google**, **share AI prompts**, **like prompts**, and **view personal contributions**. It's built using **Next.js** and **MongoDB**, with full CRUD capabilities for prompt management.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌐 Live Demo
+
+🔗 Try it here: [https://promptshare.vercel.app](https://prompt-share-neon.vercel.app/)
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Login Page
+![Login Page](./images/LoginPage.png)
+
+### 🏠 Home Page
+![Home Page](./images/HomePage.png)
+
+### ❤️ Liked Posts
+![Liked Posts](./images/LikedPosts.png)
+
+### ✍️ Your Posts
+![User Posts](./images/UserPosts.png)
+
+> 📝 Save these images inside the `images/` folder in your root directory (as shown in your repo structure).
+
+---
+
+## 🛠️ Features
+
+- 🔐 Google Sign-In Authentication
+- 📝 Create, Read, Update, and Delete (CRUD) prompts
+- 🧠 Explore useful AI prompts from other users
+- ❤️ Like or unlike prompts
+- 👤 View and manage your own posts
+- 💻 Responsive design for mobile and desktop
+
+---
+
+## 🧑‍💻 Tech Stack
+
+- **Frontend**: React (via Next.js `app` directory)
+- **Backend**: Next.js API routes
+- **Database**: MongoDB (with Mongoose models)
+- **Authentication**: NextAuth.js + Google OAuth
+- **Styling**: Tailwind CSS
+- **Hosting**: Vercel
+
+---
+
+
+## 📁 Folder Structure
+
+```
+promptshare/
+├── app/                 # App directory (Next.js 13+)
+├── components/          # Reusable UI components
+├── images/              # Screenshot assets for README
+├── models/              # Mongoose models for MongoDB
+├── public/assets/       # Static assets like icons/images
+├── styles/              # Global styles (e.g., Tailwind CSS)
+├── utils/               # Helper functions/utilities
+├── .gitignore
+├── README.md
+├── jsconfig.json
+├── next.config.js
+├── package.json
+├── package-lock.json
+├── postcss.config.mjs
+└── tailwind.config.mjs
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ⚙️ Getting Started Locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone the repository**
+```bash
+git clone https://github.com/your-username/promptshare.git
+cd promptshare
+```
 
-## Learn More
+2. **Install dependencies**
+```bash
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Set up environment variables**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file in the root directory and add the following:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+MONGODB_URI=your_mongodb_connection_string
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_random_secret
+```
 
-## Deploy on Vercel
+4. **Run the development server**
+```bash
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Visit [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
