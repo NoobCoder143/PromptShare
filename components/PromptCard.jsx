@@ -75,7 +75,7 @@ const PromptCard = ({ post, edit, handleDelete, onLikeToggle }) => {
 
   return (
     <div
-      className={`max-w-sm rounded-lg border border-gray-200 bg-white shadow-md p-4 mt-6 relative ${
+      className={`w-full sm:w-[300px] h-[250px] rounded-lg border border-gray-200 bg-white shadow-md p-4 mt-6 relative flex flex-col justify-between ${
         !edit ? "cursor-pointer" : ""
       }`}
       onClick={() => setshowModal(true)}
@@ -100,8 +100,8 @@ const PromptCard = ({ post, edit, handleDelete, onLikeToggle }) => {
           ? Post.prompt.slice(0, 90) + "..."
           : Post.prompt}
       </p>
-      <div className="mt-3 inline-block rounded-md bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-600">
-        #{Post.tag}
+      <div className="mt-3 w-fit inline-block rounded-md bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-600">
+        {Post.tag}
       </div>
       {/* copy button */}
       <div
